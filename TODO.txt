@@ -1,0 +1,4 @@
+1. Change swarmnet to swarmtalk
+2. Add single header compiler
+3. Put swarmos as submodule of swarmtalk, and rename to control_interface
+4. Reorg control_factory
