@@ -1,0 +1,13 @@
+{
+  "Kilobot": {
+    "driver_dir": "../../Platforms/Kilobot/",
+    "driver_file_name": "st_kilobot_driver.h",
+    "output_file_name": "swarmtalk.h"
+  },
+
+  "ARGOS3_Footbot": {
+    "driver_dir": "../../Platforms/ARGOS3_Footbot/",
+    "driver_file_name": "st_argos_footbot_driver.h",
+    "output_file_name": "swarmtalk.h"
+  }
+}
