@@ -28,15 +28,14 @@ class Swarmtalk {
     void receive(unsigned char* pkt, int size, Meta_t* meta);
     void init();
     Common_system* get_common_sys();
-    // void set_common_sys(Common_system* common_sys);
 
     /* ------- constructor ------- */
 
     Swarmtalk();
     ~Swarmtalk();
+    Common_system sys;
 
    private:
-    Common_system common_sys;
     int nodeId;
     int forward_size;
     Packet forwardBuffer[FORWARD_BUFF_SIZE];

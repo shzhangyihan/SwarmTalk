@@ -3,6 +3,7 @@ import json
 import os
 import re
 import math
+import shutil
 
 
 supported_platforms_jsonfile = "supported_platforms.json"
@@ -62,7 +63,6 @@ def include_header(in_file_dir, in_file_name):
                 if include_file in swarmtalk_src_list:
                     global st_src_dir_path
                     replace = True
-                    included_list = included_list + [include_file]
                     replace_dir = st_src_dir_path
                     replace_file = include_file.split("/")[-1]
                 elif include_file in platform_driver_src_list:
@@ -123,17 +123,12 @@ def include_src():
     return out_buffer
 
 
-def main():
+def build(platform_name, build_dir_path):
     # load platform info
     global platform_info_json
     with open(supported_platforms_jsonfile, "r") as json_file:
         platform_info_json = json.load(json_file)
 
-    # parse input
-    if len(sys.argv) != 2:
-        sys.exit("Expecting 1 argument instead of " + str(len(sys.argv) - 1))
-
-    platform_name = sys.argv[1]
     if platform_name not in platform_info_json.keys():
         sys.exit("Unrecognized platform " + platform_name)
 
@@ -174,7 +169,7 @@ def main():
         print(f)
 
     # create destination folder if not exist
-    dest_path = root_path + "build/" + platform_name
+    dest_path = root_path + build_dir_path + platform_name
     if not os.path.exists(dest_path):
         os.makedirs(dest_path)
 
@@ -190,6 +185,21 @@ def main():
     out_f.write(output_buffer)
     out_f.close()
 
+    # copy the config file from driver to build 
+    shutil.copyfile(driver_dir_path + "/config.h", dest_path + "/config.h")
+
 
 if __name__ == "__main__":
-    main()
+    # parse input
+    platform_name = ""
+    build_dir_path = ""
+    if len(sys.argv) == 2:
+        platform_name = sys.argv[1]
+        build_dir_path = "build/"
+    elif len(sys.argv) == 3:
+        platform_name = sys.argv[1]
+        build_dir_path = sys.argv[2] + "/"
+    else:
+        sys.exit("Expecting 2 or 3 arguments instead of " + str(len(sys.argv) - 1))
+
+    build(platform_name, build_dir_path)

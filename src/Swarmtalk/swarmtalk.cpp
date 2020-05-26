@@ -12,12 +12,7 @@ Swarmtalk::~Swarmtalk() {}
 
 void Swarmtalk::init() { new_id(); }
 
-// void Swarmtalk::set_common_sys(Common_system *common_sys) {
-//     this->common_sys = common_sys;
-//     new_id();
-// }
-
-Common_system *Swarmtalk::get_common_sys() { return &(this->common_sys); }
+Common_system *Swarmtalk::get_common_sys() { return &(this->sys); }
 
 Channel *Swarmtalk::new_channel(int type, int hops, bool listen) {
     if (type > CHAN_TYPE_MAX) {
@@ -31,14 +26,12 @@ Channel *Swarmtalk::new_channel(int type, int hops, bool listen) {
     }
 
     chans[chan_num].init(type, hops, listen);
-    chans[chan_num].set_common_sys(&common_sys);
+    chans[chan_num].set_common_sys(&sys);
     chan_num++;
     return &(chans[chan_num - 1]);
 }
 
-void Swarmtalk::new_id() {
-    this->nodeId = common_sys.random_func() % NODE_ID_MAX;
-}
+void Swarmtalk::new_id() { this->nodeId = sys.random_func() % NODE_ID_MAX; }
 
 int Swarmtalk::next_pkt(unsigned char *pkt) {
     // no channel created

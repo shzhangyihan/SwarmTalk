@@ -19,7 +19,7 @@ int last_rest;
 float period;
 
 void recv_callback(unsigned char *msg, int size, int ttl, Meta_t *meta) {
-    int my_time = st_common_sys->get_clock() - last_rest - meta->msg_delay;
+    int my_time = swarmtalk.sys.get_clock() - last_rest - meta->msg_delay;
     if (my_time < 0) {
         my_time = DEFAULT_PERIOD + my_time;
     }
@@ -27,7 +27,7 @@ void recv_callback(unsigned char *msg, int size, int ttl, Meta_t *meta) {
         return;
     }
     float step =
-        NORMALIZE_FACTOR * (1 + (st_common_sys->random_func() % 3) / 5.0);
+        NORMALIZE_FACTOR * (1 + (swarmtalk.sys.random_func() % 3) / 5.0);
     if (my_time < (my_state.period_length / 2))
         period = period + (my_time * step);
     else
@@ -41,10 +41,10 @@ void recv_callback(unsigned char *msg, int size, int ttl, Meta_t *meta) {
 }
 
 void loop() {
-    if (st_common_sys->get_clock() - last_rest > period) {
+    if (swarmtalk.sys.get_clock() - last_rest > period) {
         LED_control->turn_on(255, 255, 255, LED_DURATION);
         publisher->send((unsigned char *)&my_state, sizeof(my_state));
-        last_rest = st_common_sys->get_clock();
+        last_rest = swarmtalk.sys.get_clock();
         my_state.period_length = DEFAULT_PERIOD;
         period = DEFAULT_PERIOD;
     }
@@ -56,7 +56,7 @@ void setup() {
     subscriber = channel->new_subscriber(150, recv_callback);
 
     my_state.period_length =
-        st_common_sys->random_func() % (DEFAULT_PERIOD + TIMER_CHANGE_BOUND);
-    period = fmod(1.0 * st_common_sys->random_func(), 1.0 * (DEFAULT_PERIOD));
-    last_rest = st_common_sys->get_clock();
+        swarmtalk.sys.random_func() % (DEFAULT_PERIOD + TIMER_CHANGE_BOUND);
+    period = fmod(1.0 * swarmtalk.sys.random_func(), 1.0 * (DEFAULT_PERIOD));
+    last_rest = swarmtalk.sys.get_clock();
 }
