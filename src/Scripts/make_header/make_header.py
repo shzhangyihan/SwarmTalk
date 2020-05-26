@@ -58,11 +58,12 @@ def include_header(in_file_dir, in_file_name):
         if include_file:
             include_file = os.path.abspath(
                 in_file_dir + include_file[0]).rsplit(".", 1)[0]
-            print(include_file)
+            # print(include_file)
             if include_file not in included_list:
                 if include_file in swarmtalk_src_list:
                     global st_src_dir_path
                     replace = True
+                    included_list = included_list + [include_file]
                     replace_dir = st_src_dir_path
                     replace_file = include_file.split("/")[-1]
                 elif include_file in platform_driver_src_list:
@@ -76,7 +77,7 @@ def include_header(in_file_dir, in_file_name):
         if skip:
             out_buffer = out_buffer
         elif replace:
-            print("Trying to include " + replace_dir + "/" + replace_file)
+            print("Trying to include header " + replace_dir + "/" + replace_file + ".h")
             header_buffer = header_buffer + \
                 include_header(replace_dir, replace_file + ".h")
         else:
@@ -101,6 +102,7 @@ def include_src():
             print("File [" + file_name + "] does not exist")
             continue
 
+        print("Trying to include src " + file_name)
         out_buffer = out_buffer + \
             str_comment("Start of " + file_name.rsplit("/", 1)[1])
 
@@ -151,6 +153,7 @@ def build(platform_name, build_dir_path):
     print("Collected src files in platform driver directory: ")
     for f in platform_driver_src_list:
         print(f)
+    print()
 
     # find files in swarmtalk src
     global swarmtalk_src_list
@@ -167,6 +170,7 @@ def build(platform_name, build_dir_path):
     print("Collected src files in SwarmTalk directory: ")
     for f in swarmtalk_src_list:
         print(f)
+    print()
 
     # create destination folder if not exist
     dest_path = root_path + build_dir_path + platform_name
